@@ -1,12 +1,12 @@
 import type { FC } from "react";
 import clsx from "clsx";
-import styles from "./logIn.module.scss";
+import styles from "./signUp.module.scss";
 import { Button } from "@/shared/ui/button";
 import { FormWrapper} from '@/shared/ui/form';
 import { InputField} from '@/shared/ui/input';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-export const LogIn: FC = () => {
+export const SignUp: FC = () => {
   return (
     <main className={clsx(styles.fullMinHeight, styles.columnDirection)}>
       <div className={clsx(styles.gapping, styles.rowDirection, styles.itemsCenter)}>
@@ -24,15 +24,18 @@ export const LogIn: FC = () => {
 
         <FormWrapper>
           <div className={styles.signButtons}>
-            <Button variant={"primary"} size={"small"} style={{color: "#000000", }}>Sign In</Button>
             <Button variant={"primary"} size={"small"} style={{background: "none", fontWeight: "500"}}>
-              <Link to="/sign-up" className={styles.forLink}>Sign Up</Link>
+              <Link to="/sign-in" className={styles.forLink}>Sign In</Link>
+            </Button>
+            <Button variant={"primary"} size={"small"} style={{color: "#000000", }}>
+              Sign Up
             </Button>
           </div>
 
           <InputField placeHolder={"E-mail"} type={"email"}></InputField>
           <InputField placeHolder={"Password"} type={"password"}></InputField>
-          <Button variant={"sign"} size={"large"}>Log In</Button>
+          <InputField placeHolder={"Confirm Password"} type={"password"}></InputField>
+          <Button variant={"sign"} size={"large"}>Registration</Button>
           <a className={styles.subHeading} href={"http://localhost:3000"}>Forgot your password?</a>
         </FormWrapper>
       </div>

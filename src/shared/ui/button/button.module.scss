@@ -11,6 +11,7 @@
   border: none;
   transition: background-color 0.2s ease, transform 0.1s ease;
   user-select: none;
+  white-space: nowrap;
 
   &:active {
     transform: scale(1);
@@ -49,7 +50,7 @@
 
 .small {
   font-size: 14px;
-  padding: 10px 40px;
+  padding: 10px 30px;
 }
 
 .large {
