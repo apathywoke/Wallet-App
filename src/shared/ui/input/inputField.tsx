@@ -9,13 +9,18 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 export const InputField: FC<InputFieldProps> = ({
   placeHolder,
   type,
+  value,
+  onChange,
   ...props
+
 }) => {
   return(
     <input
       className={styles.input}
       type={type}
       placeholder={placeHolder}
-      {...props}/>
+      value={value}
+      onChange={onChange}
+      {...props} />
   )
 }

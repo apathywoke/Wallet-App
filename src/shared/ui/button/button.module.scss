@@ -26,19 +26,13 @@
 .primary {
   background-color: #fefefe;
   color: white;
-
-  &:hover:not(:disabled) {
-    background-color: #fefefe;
-  }
 }
 
 .secondary {
   background-color: #e5e7eb;
   color: #111827;
 
-  &:hover:not(:disabled) {
-    background-color: #d1d5db;
-  }
+  //&:hover:not(:disabled)
 }
 
 .sign {

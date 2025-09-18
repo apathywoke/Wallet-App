@@ -28,8 +28,9 @@ export const Button: FC<ButtonProps> = ({
       )}
       disabled={disabled || loading}
       {...props}
+      type="submit"
     >
-      {loading ? "Loading..." : children}
+      {children}
     </button>
   );
 };

@@ -4,53 +4,35 @@ $textColor: #fefefe;
 $secondaryTextColor: #8a8a8a;
 $inputColor: #2e2f31;
 
-// general styles
 html, body {
+  // general styles
   height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
 }
 
 .fullMinHeight {
+  // full and minimum height is set by 100 view height of screen
   min-height: 100vh;
 }
 
-//directions
-.columnDirection {
-  display: flex;
-  flex-direction: column;
-}
-
-.rowDirection {
-  display: flex;
-  flex-direction: row;
-}
-
-//items-align
-.itemsCenter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-//heading text styles
 .heading {
+  // greeting heading text styles
   font-size: 18px;
   font-weight: bold;
   color: $textColor;
   margin: 0;
-  text-align: center;
 }
 
-//subheading text styles
 .subHeading {
+  // greeting text styles
   font-size: 14px;
   color: $secondaryTextColor;
   font-weight: 300;
-  text-align: center;
 }
 
 .signButtons {
+  // sign buttons styles
   background-color: $inputColor;
   padding: 3px 3px;
   border-radius: 10px;
@@ -62,16 +44,17 @@ html, body {
 }
 
 .formComponent {
+  // general form styles
   background-color: $secondaryColor;
   border-radius: 25px;
 
   margin: 20vh auto 0;
-  padding: 3rem 5rem;
+  padding: 1rem 5rem;
 
   width: 100%;
   height: 100%;
-  max-width: 600px;
-  min-height: 500px;
+  max-width: 400px;
+  min-height: 550px;
 
   display: flex;
   flex-direction: column;
@@ -81,6 +64,7 @@ html, body {
 }
 
 .circle {
+  // logo style
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -88,15 +72,57 @@ html, body {
 }
 
 .gapping {
+  // set gap by 15 pixels
   gap: 15px;
 }
 
 .gapping h2 {
+  // gap for logo label
   font-weight: 300;
   font-size: 18px;
 }
 
+.active {
+  color: black;
+}
+
+.inactive {
+  background: none;
+  font-weight: 500;
+}
+
+.inactive:hover {
+  background: none;
+}
+
+/////////////////// REUSABLE CLASSES ///////////////////
+
+.columnDirection {
+  // column direction in fact
+  display: flex;
+  flex-direction: column;
+}
+
+.rowDirection {
+  // row direction in fact
+  display: flex;
+  flex-direction: row;
+}
+
+.itemsCenter {
+  //items-align
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.textCenter {
+  // set position of text to the center of block
+  text-align: center;
+}
+
 .forLink {
+  // styles for the <Link /> block, react-routing-dom thing
   text-decoration: none;
   color: $textColor;
 }
