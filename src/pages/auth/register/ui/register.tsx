@@ -15,9 +15,10 @@ import styles from "@/shared/styles/sign.module.scss";
 import { Button } from "@/shared/ui/button";
 import { FormWrapper } from '@/shared/ui/form';
 import { InputField } from '@/shared/ui/input';
+import { useTranslation } from "@/shared/lib/i18n";
 
 export const Register: FC = () => {
-
+  const { t } = useTranslation();
   const { mutateAsync, isPending } = RegisterRequest();
 
   const {
@@ -26,59 +27,63 @@ export const Register: FC = () => {
     formState: { errors },
   } = useForm<RegisterFormFillRequiring>({
     resolver: zodResolver(registerSchema),
-    mode: "onChange", // validation on changing
+    mode: "onChange",
   })
 
   const onSubmit = async (data: RegisterFormFillRequiring)=> {
-    await mutateAsync(data); // call RegisterRequest
+    await mutateAsync(data);
   }
 
   return (
     <main className={clsx(styles.fullMinHeight, styles.columnDirection)}>
       <div className={clsx(styles.gapping, styles.rowDirection, styles.itemsCenter)}>
         <div className={styles.circle}></div>
-        <h2>Wallet App</h2>
+        <h2>{t.common.walletApp}</h2>
       </div>
 
       <div className={clsx(styles.formComponent, styles.columnDirection, styles.itemsCenter)}>
 
         <div>
-          <h1 className={clsx(styles.heading, styles.textCenter)}>Welcome Back</h1>
-          <h2 className={clsx(styles.subHeading, styles.textCenter)}>Choose a login method</h2>
+          <h1 className={clsx(styles.heading, styles.textCenter)}>{t.auth.registerTitle}</h1>
+          <h2 className={clsx(styles.subHeading, styles.textCenter)}>{t.common.chooseLoginMethod}</h2>
         </div>
 
         <div className={styles.signButtons}>
           <Button variant={"primary"} size={"small"} className={styles.inactive}>
-            <Link to="/sign-in" className={styles.forLink}>Sign In</Link>
+            <Link to="/sign-in" className={styles.forLink}>{t.common.signIn}</Link>
           </Button>
           <Button variant={"primary"} size={"small"} className={styles.active}>
-            Sign Up
+            {t.common.signUp}
           </Button>
         </div>
 
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <InputField
-            placeHolder={"E-mail"}
+            placeHolder={t.common.email}
             type={"email"}
             {...register ("email")}
           />
-          {errors.email && <span>{errors.email.message}</span>}
+          {errors.email && <span>{t.validation.emailInvalid}</span>}
           <InputField
-            placeHolder={"Password"}
+            placeHolder={t.common.password}
             type={"password"}
             {...register ("password")}
           />
-          {errors.password && <span>{errors.password.message}</span>}
+          {errors.password && <span>{t.validation.passwordTooShort}</span>}
           <InputField
-            placeHolder={"Confirm Password"}
+            placeHolder={t.common.confirmPassword}
             type={"password"}
             {...register ("confirmPassword")}
           />
-          {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
-          <Button variant={"sign"} size={"large"} loading={isPending}>Registration</Button>
+          {errors.confirmPassword && <span>{t.validation.passwordsNotMatch}</span>}
+          <Button variant={"sign"} size={"large"} loading={isPending}>
+            {t.auth.registerButton}
+          </Button>
         </FormWrapper>
 
-        <a className={clsx(styles.subHeading, styles.textCenter)} href={"http://localhost:3000"}>Forgot your password?</a>
+        <a className={clsx(styles.subHeading, styles.textCenter)} href="/forgot-password">
+          {t.common.forgotPassword}
+        </a>
 
       </div>
     </main>
