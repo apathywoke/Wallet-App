@@ -16,11 +16,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// MongoDB Atlas connection string
-const uri = "mongodb+srv://asdysphoria_db_user:5EniytcoDFxq5cNA@cluster0.hjvruga.mongodb.net/wallet-app?retryWrites=true&w=majority&appName=Cluster0";
-
-// Connect to MongoDB Atlas
-mongoose.connect(uri)
+// Connect to MongoDB Atlas using environment variables
+const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/wallet-app';
+mongoose.connect(mongoUri)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => {
     console.error('MongoDB connection error:', err);
@@ -32,7 +30,7 @@ const auth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     if (!token) throw new Error();
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key');
     const user = await User.findById(decoded.userId);
     
     if (!user) throw new Error();
@@ -67,7 +65,7 @@ app.post('/api/auth/register', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || 'fallback-secret-key',
       { expiresIn: '7d' }
     );
 
@@ -108,7 +106,7 @@ app.post('/api/auth/login', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || 'fallback-secret-key',
       { expiresIn: '7d' }
     );
 
