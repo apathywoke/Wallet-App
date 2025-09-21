@@ -46,7 +46,8 @@ export const en: Translations = {
   validation: {
     required: 'This field is required',
     emailInvalid: 'Please enter a valid email address',
-    passwordTooShort: 'Password must be at least 7 characters',
+    passwordTooShort: 'Password must be at least 8 characters',
+    passwordComplexity: 'Password must contain at least one lowercase letter, one uppercase letter, one number and one special character',
     passwordsNotMatch: 'Passwords must match',
   },
 };

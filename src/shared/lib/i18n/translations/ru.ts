@@ -46,7 +46,8 @@ export const ru: Translations = {
   validation: {
     required: 'Это поле обязательно',
     emailInvalid: 'Пожалуйста, введите корректный email адрес',
-    passwordTooShort: 'Пароль должен содержать минимум 7 символов',
+    passwordTooShort: 'Пароль должен содержать минимум 8 символов',
+    passwordComplexity: 'Пароль должен содержать минимум одну строчную букву, одну заглавную букву, одну цифру и один специальный символ',
     passwordsNotMatch: 'Пароли должны совпадать',
   },
 };

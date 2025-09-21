@@ -62,14 +62,30 @@ export const RegisterRequest = () => {
       navigate('/dashboard');
     },
     onError: (error: unknown) => {
-      if (error instanceof Error) {
-        if (error.message === 'User already exists') {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
           showError(t.auth.userExists);
-        } else if (error.message === 'Network error') {
+        } else if (error.response?.status === 400) {
+          const errorData = error.response.data;
+          if (errorData.details && Array.isArray(errorData.details)) {
+            // Show first validation error
+            showError(errorData.details[0].message);
+          } else if (errorData.error) {
+            showError(errorData.error);
+          } else {
+            showError('Registration failed. Please check your input.');
+          }
+        } else if (error.response?.status === 429) {
+          showError('Too many registration attempts. Please try again later.');
+        } else if (error.response?.data?.error) {
+          showError(error.response.data.error);
+        } else if (error.request) {
           showError(t.auth.serverError);
         } else {
-          showError(error.message);
+          showError(t.auth.networkError);
         }
+      } else if (error instanceof Error) {
+        showError(error.message);
       } else {
         showError(t.auth.networkError);
       }

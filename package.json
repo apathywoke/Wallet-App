@@ -1,7 +1,7 @@
 {
   "name": "@schizo/wallet-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Enterprise-grade digital wallet application with multi-currency support, built with React, TypeScript, and modern security practices",
   "author": "Schizo <schizo@walletapp.com>",
   "license": "MIT",
   "homepage": "https://wallet-app.schizo.dev",

@@ -51,6 +51,7 @@ export interface Translations {
     required: string;
     emailInvalid: string;
     passwordTooShort: string;
+    passwordComplexity: string;
     passwordsNotMatch: string;
   };
 }

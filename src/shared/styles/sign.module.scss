@@ -1,70 +1,191 @@
-$primaryColor: #0c67e9;
-$secondaryColor: #1c1d1f;
-$textColor: #fefefe;
-$secondaryTextColor: #8a8a8a;
-$inputColor: #2e2f31;
+/**
+ * Основные стили для страниц авторизации (вход/регистрация)
+ * 
+ * Содержит:
+ * - Цветовую палитру приложения
+ * - Адаптивные breakpoints
+ * - Утилитарные mixins
+ * - Стили для форм, кнопок и компонентов
+ * - Переиспользуемые классы
+ */
+
+// ===== ЦВЕТОВАЯ ПАЛИТРА =====
+$primaryColor: #0c67e9;        // Основной синий цвет (кнопки, акценты)
+$secondaryColor: #1c1d1f;      // Темный фон (формы, контейнеры)
+$textColor: #fefefe;           // Основной белый текст
+$secondaryTextColor: #8a8a8a;  // Вторичный серый текст
+$inputColor: #2e2f31;          // Цвет полей ввода
+
+// ===== АДАПТИВНЫЕ BREAKPOINTS (Mobile-first) =====
+$xs: 320px;   // Очень маленькие устройства (старые телефоны)
+$sm: 480px;   // Маленькие устройства (современные телефоны)
+$md: 768px;   // Средние устройства (планшеты)
+$lg: 1024px;  // Большие устройства (ноутбуки)
+$xl: 1200px;  // Очень большие устройства (десктопы)
+
+// ===== УТИЛИТАРНЫЕ MIXINS =====
+
+// Mixin для медиа-запросов (упрощает написание адаптивных стилей)
+@mixin respond-to($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+
+// Mixin для плавного изменения размера шрифта в зависимости от экрана
+@mixin fluid-font($min-size, $max-size, $min-screen: $xs, $max-screen: $xl) {
+  font-size: clamp(#{$min-size}, #{$min-size} + (#{$max-size} - #{$min-size}) * ((100vw - #{$min-screen}) / (#{$max-screen} - #{$min-screen})), #{$max-size});
+}
+
+// ===== ГЛОБАЛЬНЫЕ СТИЛИ =====
 
 html, body {
-  // general styles
   height: 100%;
   overflow-x: hidden;
-  overflow-y: hidden;
+  
+  // Улучшенная прокрутка на мобильных устройствах
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
+// ===== ОСНОВНЫЕ КОНТЕЙНЕРЫ =====
+
+// Базовый контейнер с минимальной высотой экрана
 .fullMinHeight {
-  // full and minimum height is set by 100 view height of screen
   min-height: 100vh;
+  min-height: 100dvh; // Динамическая высота viewport для мобильных браузеров
 }
 
+// Специфичные отступы для страниц авторизации
+.authPage {
+  padding: 1rem;
+  
+  @include respond-to($sm) {
+    padding: 1.5rem;
+  }
+  
+  @include respond-to($md) {
+    padding: 2rem;
+  }
+}
+
+// ===== ТИПОГРАФИКА =====
+
+// Основной заголовок страницы
 .heading {
-  // greeting heading text styles
   font-size: 18px;
   font-weight: bold;
   color: $textColor;
   margin: 0;
 }
 
+// Подзаголовок страницы
 .subHeading {
-  // greeting text styles
   font-size: 14px;
   color: $secondaryTextColor;
   font-weight: 300;
 }
 
+// ===== КОМПОНЕНТЫ ФОРМ =====
+
+// Контейнер для переключателя между входом и регистрацией
 .signButtons {
-  // sign buttons styles
   background-color: $inputColor;
   padding: 3px 3px;
   border-radius: 10px;
   justify-content: space-between;
   display: flex;
   align-items: center;
-  width: 244px;
+  width: 87%;
+  min-height: 50px;
+  max-height: 55px;
   white-space: nowrap;
+  box-sizing: border-box;
+  overflow: hidden; // Предотвращает выход кнопок за границы
+  
+  @include respond-to($md) {
+    min-height: 50px;
+  }
+  
+  // Стили для кнопок внутри .signButtons
+  button {
+    flex: 1;
+    height: calc(100% - 6px);
+    border: none;
+    background: transparent;
+    color: $secondaryTextColor;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 7px;
+    margin: 3px 1.5px;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    
+    // Полностью убираем все transform эффекты
+    &:active,
+    &:focus,
+    &:hover {
+      transform: none !important;
+      scale: none !important;
+      outline: none !important;
+    }
+    
+    &.active {
+      color: black;
+      background-color: #fefefe;
+    }
+    
+    &.inactive {
+      background: none;
+      color: $secondaryTextColor;
+      
+      &:hover {
+        color: $textColor;
+      }
+    }
+    
+    // Стили для ссылок внутри кнопок
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+      padding: 0;
+      margin: 0;
+    }
+  }
 }
 
 .formComponent {
-  // general form styles
   background-color: $secondaryColor;
   border-radius: 25px;
-
   margin: 20vh auto 0;
   padding: 1rem 5rem;
-
   width: 100%;
   height: 100%;
   max-width: 400px;
   min-height: 550px;
-
   display: flex;
   flex-direction: column;
   gap: 2rem;
-
   box-sizing: border-box;
+  
+  @include respond-to($sm) {
+    padding: 1.5rem 4rem;
+    margin: 15vh auto 0;
+  }
+  
+  @include respond-to($md) {
+    padding: 2rem 5rem;
+    margin: 20vh auto 0;
+    max-width: 450px;
+  }
 }
 
 .circle {
-  // logo style
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -72,14 +193,12 @@ html, body {
 }
 
 .gapping {
-  // set gap by 15 pixels
   gap: 15px;
-}
-
-.gapping h2 {
-  // gap for logo label
-  font-weight: 300;
-  font-size: 18px;
+  
+  h2 {
+    font-weight: 300;
+    font-size: 18px;
+  }
 }
 
 .active {
@@ -89,40 +208,61 @@ html, body {
 .inactive {
   background: none;
   font-weight: 500;
+  
+  &:hover {
+    background: none;
+  }
 }
 
-.inactive:hover {
-  background: none;
+// Heading section for proper spacing
+.headingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+  
+  @include respond-to($sm) {
+    gap: 10px;
+  }
+  
+  @include respond-to($md) {
+    gap: 12px;
+  }
 }
 
 /////////////////// REUSABLE CLASSES ///////////////////
 
 .columnDirection {
-  // column direction in fact
   display: flex;
   flex-direction: column;
 }
 
 .rowDirection {
-  // row direction in fact
   display: flex;
   flex-direction: row;
 }
 
 .itemsCenter {
-  //items-align
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .textCenter {
-  // set position of text to the center of block
   text-align: center;
 }
 
 .forLink {
-  // styles for the <Link /> block, react-routing-dom thing
   text-decoration: none;
   color: $textColor;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  
+  @include respond-to($md) {
+    padding: 0.875rem 1.25rem;
+  }
 }

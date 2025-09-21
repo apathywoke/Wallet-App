@@ -1,17 +1,37 @@
+// Breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;
   font-weight: bold;
-  border-radius: 10px;
-  padding: 0.6rem 1.2rem;
-  font-size: 18px;
+  border-radius: 8px;
+  padding: 0.5rem 0.5rem;
+  font-size: 14px;
   cursor: pointer;
   border: none;
   transition: background-color 0.2s ease, transform 0.1s ease;
   user-select: none;
   white-space: nowrap;
+  min-height: 44px; // Touch target size
+  text-align: center;
+  
+  @media (min-width: $mobile) {
+    padding: 0.6rem 1.2rem;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+  
+  @media (min-width: $tablet) {
+    padding: 0.75rem 1.5rem;
+    font-size: 18px;
+    border-radius: 12px;
+    min-height: 48px;
+  }
 
   &:active {
     transform: scale(1);
@@ -26,11 +46,13 @@
 .primary {
   background-color: #fefefe;
   color: black;
+  text-align: center;
 }
 
 .secondary {
   background-color: #e5e7eb;
   color: #111827;
+  text-align: center;
 
   //&:hover:not(:disabled)
 }
@@ -38,18 +60,50 @@
 .sign {
   background-color: #ffffff;
   color: black;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
+  
+  @media (min-width: $mobile) {
+    font-size: 14px;
+  }
+  
+  @media (min-width: $tablet) {
+    font-size: 14px;
+  }
 }
 
 .small {
-  font-size: 14px;
-  padding: 10px 30px;
+  font-size: 12px;
+  padding: 8px 10px;
+  min-height: 40px;
+  
+  @media (min-width: $mobile) {
+    font-size: 14px;
+    padding: 10px 30px;
+    min-height: 44px;
+  }
+  
+  @media (min-width: $tablet) {
+    font-size: 14px;
+    padding: 12px 35px;
+  }
 }
 
 .large {
-  padding: 1.125rem 6.188rem;
-  font-size: 14px;
+  padding: 1rem 4rem;
+  font-size: 12px;
+  width: 100%;
+  
+  @media (min-width: $mobile) {
+    padding: 1.125rem 5rem;
+    font-size: 14px;
+  }
+  
+  @media (min-width: $tablet) {
+    padding: 1.125rem 6.188rem;
+    font-size: 14px;
+    min-height: 52px;
+  }
 }
 
 .loading {
