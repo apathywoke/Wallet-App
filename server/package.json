@@ -1,11 +1,28 @@
 {
-  "name": "wallet-app-server",
+  "name": "@schizo/wallet-app-server",
   "version": "1.0.0",
-  "description": "Backend server for Wallet App",
+  "description": "Enterprise-grade backend API for Schizo Wallet App - secure digital wallet with multi-currency support",
   "main": "index.js",
+  "author": "Schizo <schizo@walletapp.com>",
+  "license": "MIT",
+  "homepage": "https://wallet-app.schizo.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schizo/wallet-app.git",
+    "directory": "server"
+  },
+  "bugs": {
+    "url": "https://github.com/schizo/wallet-app/issues"
+  },
+  "keywords": ["wallet", "api", "fintech", "payments", "express", "mongodb", "jwt", "backend"],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -19,4 +36,3 @@
     "nodemon": "^3.1.10"
   }
 }
-
