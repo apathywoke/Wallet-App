@@ -1,26 +1,46 @@
 import type { FC, InputHTMLAttributes } from 'react';
-import styles from "./inputField.module.scss"
+import clsx from 'clsx';
+import styles from "./inputField.module.scss";
 
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   placeHolder: string;
   type: string;
+  error?: boolean;
+  success?: boolean;
+  loading?: boolean;
+  errorMessage?: string;
+  successMessage?: string;
 }
 
 export const InputField: FC<InputFieldProps> = ({
   placeHolder,
   type,
-  value,
-  onChange,
+  error,
+  success,
+  loading,
+  errorMessage,
+  successMessage,
+  className,
   ...props
-
 }) => {
-  return(
-    <input
-      className={styles.input}
-      type={type}
-      placeholder={placeHolder}
-      value={value}
-      onChange={onChange}
-      {...props} />
-  )
-}
+  return (
+    <div className={styles.inputWrapper}>
+      <input
+        className={clsx(
+          styles.input,
+          {
+            [styles.inputError]: error,
+            [styles.inputSuccess]: success,
+            [styles.inputLoading]: loading,
+          },
+          className
+        )}
+        type={type}
+        placeholder={placeHolder}
+        {...props}
+      />
+      {errorMessage && <span className={styles.errorMessage}>{errorMessage}</span>}
+      {successMessage && <span className={styles.successMessage}>{successMessage}</span>}
+    </div>
+  );
+};

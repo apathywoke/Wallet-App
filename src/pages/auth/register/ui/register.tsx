@@ -1,3 +1,15 @@
+/**
+ * Компонент страницы регистрации
+ * 
+ * Основные функции:
+ * - Отображение формы регистрации с валидацией
+ * - Проверка совпадения паролей
+ * - Обработка отправки данных на сервер
+ * - Навигация между страницами входа и регистрации
+ * - Поддержка многоязычности (i18n)
+ * - Toast уведомления об ошибках/успехе
+ */
+
 import type { FC } from "react";
 import { useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,70 +27,93 @@ import styles from "@/shared/styles/sign.module.scss";
 import { Button } from "@/shared/ui/button";
 import { FormWrapper } from '@/shared/ui/form';
 import { InputField } from '@/shared/ui/input';
+import { useTranslation } from "@/shared/lib/i18n";
 
 export const Register: FC = () => {
-
+  // Получаем функцию перевода для текущего языка
+  const { t } = useTranslation();
+  
+  // Хук для выполнения запроса регистрации (с loading состоянием)
   const { mutateAsync, isPending } = RegisterRequest();
 
+  // Настройка формы с валидацией через Zod
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register,        // Регистрация полей формы
+    handleSubmit,    // Обработчик отправки формы
+    formState: { errors }, // Ошибки валидации
   } = useForm<RegisterFormFillRequiring>({
-    resolver: zodResolver(registerSchema),
-    mode: "onChange", // validation on changing
+    resolver: zodResolver(registerSchema), // Схема валидации
+    mode: "onChange", // Валидация при изменении полей
   })
 
+  // Обработчик отправки формы - вызывает API запрос
   const onSubmit = async (data: RegisterFormFillRequiring)=> {
-    await mutateAsync(data); // call RegisterRequest
+    await mutateAsync(data);
   }
 
   return (
-    <main className={clsx(styles.fullMinHeight, styles.columnDirection)}>
+    <main className={clsx(styles.fullMinHeight, styles.authPage, styles.columnDirection)}>
+      {/* Логотип и название приложения */}
       <div className={clsx(styles.gapping, styles.rowDirection, styles.itemsCenter)}>
         <div className={styles.circle}></div>
-        <h2>Wallet App</h2>
+        <h2>{t.common.walletApp}</h2>
       </div>
 
+      {/* Основная форма регистрации */}
       <div className={clsx(styles.formComponent, styles.columnDirection, styles.itemsCenter)}>
 
-        <div>
-          <h1 className={clsx(styles.heading, styles.textCenter)}>Welcome Back</h1>
-          <h2 className={clsx(styles.subHeading, styles.textCenter)}>Choose a login method</h2>
+        {/* Заголовок и подзаголовок */}
+        <div className={styles.headingSection}>
+          <h1 className={clsx(styles.heading, styles.textCenter)}>{t.auth.registerTitle}</h1>
+          <h2 className={clsx(styles.subHeading, styles.textCenter)}>{t.common.chooseLoginMethod}</h2>
         </div>
 
+        {/* Переключатель между входом и регистрацией */}
         <div className={styles.signButtons}>
           <Button variant={"primary"} size={"small"} className={styles.inactive}>
-            <Link to="/sign-in" className={styles.forLink}>Sign In</Link>
+            <Link to="/sign-in" className={styles.forLink}>{t.common.signIn}</Link>
           </Button>
           <Button variant={"primary"} size={"small"} className={styles.active}>
-            Sign Up
+            {t.common.signUp}
           </Button>
         </div>
 
+        {/* Форма с полями ввода */}
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+          {/* Поле email с валидацией */}
           <InputField
-            placeHolder={"E-mail"}
+            placeHolder={t.common.email}
             type={"email"}
-            {...register ("email")}
+            error={!!errors.email}
+            errorMessage={errors.email?.message}
+            {...register("email")}
           />
-          {errors.email && <span>{errors.email.message}</span>}
+          {/* Поле пароля с валидацией */}
           <InputField
-            placeHolder={"Password"}
+            placeHolder={t.common.password}
             type={"password"}
-            {...register ("password")}
+            error={!!errors.password}
+            errorMessage={errors.password?.message}
+            {...register("password")}
           />
-          {errors.password && <span>{errors.password.message}</span>}
+          {/* Поле подтверждения пароля с валидацией */}
           <InputField
-            placeHolder={"Confirm Password"}
+            placeHolder={t.common.confirmPassword}
             type={"password"}
-            {...register ("confirmPassword")}
+            error={!!errors.confirmPassword}
+            errorMessage={errors.confirmPassword?.message}
+            {...register("confirmPassword")}
           />
-          {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
-          <Button variant={"sign"} size={"large"} loading={isPending}>Registration</Button>
+          {/* Кнопка регистрации с loading состоянием */}
+          <Button variant={"sign"} size={"large"} loading={isPending}>
+            {t.auth.registerButton}
+          </Button>
         </FormWrapper>
 
-        <a className={clsx(styles.subHeading, styles.textCenter)} href={"http://localhost:3000"}>Forgot your password?</a>
+        {/* Ссылка на восстановление пароля */}
+        <a className={clsx(styles.subHeading, styles.textCenter)} href="/forgot-password">
+          {t.common.forgotPassword}
+        </a>
 
       </div>
     </main>
