@@ -1,24 +1,15 @@
 /**
- * Middleware для JWT аутентификации
+ * Simple JWT authentication middleware
  * 
- * Основные функции:
- * - Проверка наличия JWT токена в заголовке Authorization
- * - Валидация токена и извлечение данных пользователя
- * - Проверка существования пользователя в БД
- * - Добавление данных пользователя в req.user
- * - Обработка ошибок аутентификации
+ * Validates JWT token and adds user data to request
  */
 
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-/**
- * Middleware аутентификации
- * Проверяет JWT токен и добавляет данные пользователя в req.user
- */
 const auth = async (req, res, next) => {
   try {
-    // Получение токена из заголовка Authorization
+    // Get token from Authorization header
     const authHeader = req.header('Authorization');
     
     if (!authHeader) {
@@ -27,7 +18,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // Извлечение токена из формата "Bearer <token>"
+    // Extract token from "Bearer <token>" format
     const token = authHeader.replace('Bearer ', '');
     
     if (!token) {
@@ -36,7 +27,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // Verify token
+    // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret-key');
     
     // Check if user still exists
@@ -48,7 +39,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // Add user info to request
+    // Add user data to request
     req.user = user;
     req.token = token;
     next();

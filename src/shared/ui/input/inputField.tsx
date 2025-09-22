@@ -1,3 +1,9 @@
+/**
+ * Simple input field component
+ * 
+ * Supports error states, success states, and loading states
+ */
+
 import type { FC, InputHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import styles from "./inputField.module.scss";
@@ -29,9 +35,9 @@ export const InputField: FC<InputFieldProps> = ({
         className={clsx(
           styles.input,
           {
-            [styles.inputError]: error,
-            [styles.inputSuccess]: success,
-            [styles.inputLoading]: loading,
+            [styles.inputError]: error, // Show error styling
+            [styles.inputSuccess]: success, // Show success styling
+            [styles.inputLoading]: loading, // Show loading styling
           },
           className
         )}

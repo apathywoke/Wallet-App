@@ -1,3 +1,13 @@
+/**
+ * Hook for accessing translation context
+ * 
+ * Provides access to:
+ * - Current language
+ * - Translation function (t)
+ * - Language setter
+ * - Text getter utility
+ */
+
 import { useContext } from 'react';
 import { I18nContext } from '../providers/I18nProvider';
 

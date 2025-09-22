@@ -1,14 +1,7 @@
 /**
- * Основной серверный файл приложения Wallet App
+ * Simple Express server for Wallet App
  * 
- * Основные функции:
- * - Настройка Express сервера
- * - Подключение к MongoDB Atlas
- * - Настройка middleware (CORS, Helmet, Rate Limiting)
- * - API endpoints для авторизации (регистрация, вход)
- * - JWT токены и аутентификация
- * - Обработка ошибок и валидация данных
- * - Безопасность (rate limiting, account locking)
+ * Handles authentication, user management, and API endpoints
  */
 
 require('dotenv').config();
@@ -17,66 +10,55 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 
-// ===== ИМПОРТ МОДЕЛЕЙ =====
+// Import models and middleware
 const User = require('./models/User');
-
-// ===== ИМПОРТ MIDDLEWARE =====
-const auth = require('./middleware/auth');                    // JWT аутентификация
-const { validateRegister, validateLogin, handleValidationErrors } = require('./middleware/validation'); // Валидация данных
-const { apiLimiter, authLimiter } = require('./middleware/rateLimiting'); // Ограничение запросов
-
-// ===== ИМПОРТ УТИЛИТ =====
-const { generateTokenPair } = require('./utils/jwt');         // Генерация JWT токенов
+const auth = require('./middleware/auth');
+const { validateRegister, validateLogin, handleValidationErrors } = require('./middleware/validation');
+const { apiLimiter, authLimiter } = require('./middleware/rateLimiting');
+const { generateTokenPair } = require('./utils/jwt');
 
 const app = express();
 
-// ===== НАСТРОЙКА MIDDLEWARE =====
-
-// Безопасность: Helmet для защиты HTTP заголовков
+// Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Ограничение количества запросов (защита от DDoS и brute force)
-app.use('/api/', apiLimiter);        // Общее ограничение для всех API
-app.use('/api/auth/', authLimiter);  // Строгое ограничение для авторизации
+// Rate limiting for API protection
+app.use('/api/', apiLimiter); // General API rate limit
+app.use('/api/auth/', authLimiter); // Strict auth rate limit
 
-// CORS конфигурация (разрешение cross-origin запросов)
+// CORS configuration
 const corsOptions = {
   origin: process.env.CORS_ORIGIN ? 
     process.env.CORS_ORIGIN.split(',') : 
-    ['http://localhost:3000', 'http://localhost:3001'], // Разрешенные домены
-  credentials: true,                                    // Разрешение cookies
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Разрешенные HTTP методы
-  allowedHeaders: ['Content-Type', 'Authorization'],    // Разрешенные заголовки
+    ['http://localhost:3000', 'http://localhost:3001'], // Allowed origins
+  credentials: true, // Allow cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
 
-// Парсинг тела запроса
-app.use(express.json({ limit: '10mb' }));                    // JSON до 10MB
-app.use(express.urlencoded({ extended: true, limit: '10mb' })); // URL-encoded до 10MB
+// Parse request body
+app.use(express.json({ limit: '10mb' })); // JSON parsing
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // URL-encoded parsing
 
-// ===== ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ =====
-
-/**
- * Подключение к MongoDB Atlas
- * Использует переменную окружения MONGODB_URI или fallback на локальную БД
- */
+// Connect to MongoDB
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/wallet-app';
     
     await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,      // Использовать новый парсер URL
-      useUnifiedTopology: true,   // Использовать новый движок топологии
+      useNewUrlParser: true, // Use new URL parser
+      useUnifiedTopology: true, // Use new topology engine
     });
     
-    console.log('✅ Connected to MongoDB Atlas');
+    console.log('✅ Connected to MongoDB');
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
-    process.exit(1); // Завершить процесс при ошибке подключения
+    process.exit(1); // Exit on connection error
   }
 };
 
@@ -93,43 +75,30 @@ mongoose.connection.on('disconnected', () => {
 process.on('SIGINT', async () => {
   try {
     await mongoose.connection.close();
-    console.log('MongoDB connection closed through app termination');
+    console.log('MongoDB connection closed');
     process.exit(0);
   } catch (error) {
-    console.error('Error during graceful shutdown:', error);
+    console.error('Error during shutdown:', error);
     process.exit(1);
   }
 });
 
-// ===== API ENDPOINTS =====
+// API endpoints
 
-// Проверка состояния сервера
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
-    service: 'Schizo Wallet App API',
+    service: 'Wallet App API',
     version: '1.0.0'
   });
 });
 
-/**
- * POST /api/auth/register - Регистрация нового пользователя
- * 
- * Middleware:
- * - validateRegister: валидация данных регистрации
- * - handleValidationErrors: обработка ошибок валидации
- * 
- * Функции:
- * - Проверка существования пользователя
- * - Хеширование пароля
- * - Создание пользователя в БД
- * - Генерация JWT токенов
- * - Возврат токенов и данных пользователя
- */
+// User registration endpoint
 app.post('/api/auth/register', 
-  validateRegister,      // Валидация email и пароля
-  handleValidationErrors, // Обработка ошибок валидации
+  validateRegister, // Validate email and password
+  handleValidationErrors, // Handle validation errors
   async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -146,15 +115,14 @@ app.post('/api/auth/register',
       const user = new User({ 
         email, 
         password,
-        isEmailVerified: false // In production, implement email verification
+        isEmailVerified: false // Email verification not implemented
       });
       
       await user.save();
 
-      // Generate token pair
+      // Generate JWT tokens
       const tokens = generateTokenPair(user._id);
 
-      // Log successful registration
       console.log(`✅ New user registered: ${email}`);
 
       res.status(201).json({
@@ -189,15 +157,15 @@ app.post('/api/auth/register',
   }
 );
 
-// Login endpoint
+// User login endpoint
 app.post('/api/auth/login',
-  validateLogin,
-  handleValidationErrors,
+  validateLogin, // Validate login data
+  handleValidationErrors, // Handle validation errors
   async (req, res) => {
     try {
       const { email, password } = req.body;
       
-      // Find user
+      // Find user by email
       const user = await User.findOne({ email });
       if (!user) {
         return res.status(401).json({ 
@@ -212,7 +180,7 @@ app.post('/api/auth/login',
         });
       }
 
-      // Check password (this also handles account locking)
+      // Verify password with brute force protection
       try {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
@@ -229,10 +197,9 @@ app.post('/api/auth/login',
         throw error;
       }
 
-      // Generate token pair
+      // Generate JWT tokens
       const tokens = generateTokenPair(user._id);
 
-      // Log successful login
       console.log(`✅ User logged in: ${email}`);
 
       res.json({
@@ -255,6 +222,21 @@ app.post('/api/auth/login',
   }
 );
 
+// Token verification endpoint
+app.get('/api/auth/verify', auth, async (req, res) => {
+  try {
+    res.json({
+      valid: true,
+      user: req.user
+    });
+  } catch (error) {
+    console.error('Token verification error:', error);
+    res.status(500).json({ 
+      error: 'Internal server error during token verification' 
+    });
+  }
+});
+
 // Get user profile (protected route)
 app.get('/api/user/profile', auth, async (req, res) => {
   try {
@@ -269,10 +251,9 @@ app.get('/api/user/profile', auth, async (req, res) => {
   }
 });
 
-// Logout endpoint (optional - mainly for logging)
+// Logout endpoint
 app.post('/api/auth/logout', auth, async (req, res) => {
   try {
-    // In a production app, you might want to blacklist the token
     console.log(`✅ User logged out: ${req.user.email}`);
     
     res.json({
@@ -309,10 +290,10 @@ const PORT = process.env.PORT || 5002;
 
 const startServer = async () => {
   try {
-    await connectDB();
+    await connectDB(); // Connect to MongoDB
     
     app.listen(PORT, () => {
-      console.log(`🚀 Schizo Wallet App API server running on port ${PORT}`);
+      console.log(`🚀 Wallet App API server running on port ${PORT}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔒 CORS enabled for: ${corsOptions.origin}`);
     });

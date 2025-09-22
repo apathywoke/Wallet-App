@@ -1,30 +1,26 @@
 /**
- * Middleware для ограничения количества запросов (Rate Limiting)
+ * Simple rate limiting middleware
  * 
- * Основные функции:
- * - Защита от DDoS атак
- * - Защита от brute force атак на авторизацию
- * - Ограничение нагрузки на сервер
- * - Разные лимиты для разных типов endpoints
+ * Protects against DDoS and brute force attacks
  */
 
 const rateLimit = require('express-rate-limit');
 
-// Общее ограничение для всех API endpoints
+// General API rate limit
 const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // Окно времени: 15 минут
-  max: 100,                 // Максимум 100 запросов с одного IP за 15 минут
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Max 100 requests per IP per 15 minutes
   message: {
     error: 'Too many requests from this IP, please try again later.',
   },
-  standardHeaders: true,    // Добавлять заголовки RateLimit-* в ответ
-  legacyHeaders: false,     // Не добавлять устаревшие заголовки X-RateLimit-*
+  standardHeaders: true, // Add RateLimit headers
+  legacyHeaders: false, // Don't add X-RateLimit headers
 });
 
-// Строгое ограничение для endpoints авторизации (защита от brute force)
+// Strict auth rate limit (brute force protection)
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // Окно времени: 15 минут
-  max: 5,                   // Максимум 5 попыток авторизации с одного IP за 15 минут
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Max 5 auth attempts per IP per 15 minutes
   message: {
     error: 'Too many authentication attempts, please try again later.',
   },
@@ -33,10 +29,10 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true, // Don't count successful requests
 });
 
-// Very strict rate limiting for password reset
+// Password reset rate limit
 const passwordResetLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // Limit each IP to 3 password reset requests per hour
+  max: 3, // Max 3 password reset attempts per IP per hour
   message: {
     error: 'Too many password reset attempts, please try again later.',
   },

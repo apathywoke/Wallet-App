@@ -1,3 +1,5 @@
+@use "sass:color";
+
 $inputColor: #2e2f31;
 $textColor: #fefefe;
 $primaryColor: #0c67e9;
@@ -49,17 +51,17 @@ $tablet: 768px;
     border-color: $errorColor;
   }
 
-  // Disabled state
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background-color: darken($inputColor, 5%);
-    
-    &:hover {
-      border-color: transparent;
-      background-color: darken($inputColor, 5%);
-    }
-  }
+      // Disabled state
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: color.adjust($inputColor, $lightness: -5%);
+        
+        &:hover {
+          border-color: transparent;
+          background-color: color.adjust($inputColor, $lightness: -5%);
+        }
+      }
 }
 
 // Error state

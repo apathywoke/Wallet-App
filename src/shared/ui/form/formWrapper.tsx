@@ -1,4 +1,10 @@
-import type { FC, ReactNode, FormHTMLAttributes, } from 'react';
+/**
+ * Simple form wrapper component
+ * 
+ * Provides consistent form styling and structure
+ */
+
+import type { FC, ReactNode, FormHTMLAttributes } from 'react';
 import styles from "./formWrapper.module.scss"
 
 interface FormWrapperProps extends FormHTMLAttributes<HTMLFormElement> {

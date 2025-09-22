@@ -1,39 +1,26 @@
 /**
- * Утилиты для работы с JWT токенами
+ * Simple JWT utilities
  * 
- * Основные функции:
- * - Генерация access токенов (короткоживущие)
- * - Генерация refresh токенов (долгоживущие)
- * - Генерация пары токенов (access + refresh)
- * - Настройка времени жизни токенов
- * - Безопасное хранение секретного ключа
+ * Handles token generation and verification
  */
 
 const jwt = require('jsonwebtoken');
 
-// Конфигурация JWT токенов
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';        // Секретный ключ для подписи
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d';                        // Время жизни access токена
-const JWT_REFRESH_EXPIRE = process.env.JWT_REFRESH_EXPIRE || '30d';       // Время жизни refresh токена
+// JWT configuration
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key'; // Secret key for signing
+const JWT_EXPIRE = process.env.JWT_EXPIRE || '7d'; // Access token lifetime
+const JWT_REFRESH_EXPIRE = process.env.JWT_REFRESH_EXPIRE || '30d'; // Refresh token lifetime
 
-/**
- * Генерация access токена (для авторизации API запросов)
- * @param {string} userId - ID пользователя
- * @returns {string} JWT access токен
- */
+// Generate access token for API authorization
 const generateAccessToken = (userId) => {
   return jwt.sign(
-    { userId, type: 'access' },  // Полезная нагрузка токена
-    JWT_SECRET,                  // Секретный ключ
-    { expiresIn: JWT_EXPIRE }    // Время жизни токена
+    { userId, type: 'access' }, // Token payload
+    JWT_SECRET, // Secret key
+    { expiresIn: JWT_EXPIRE } // Token lifetime
   );
 };
 
-/**
- * Generate refresh token
- * @param {string} userId - User ID
- * @returns {string} JWT refresh token
- */
+// Generate refresh token for token renewal
 const generateRefreshToken = (userId) => {
   return jwt.sign(
     { userId, type: 'refresh' },
@@ -42,11 +29,7 @@ const generateRefreshToken = (userId) => {
   );
 };
 
-/**
- * Generate both access and refresh tokens
- * @param {string} userId - User ID
- * @returns {Object} Object containing access and refresh tokens
- */
+// Generate both access and refresh tokens
 const generateTokenPair = (userId) => {
   return {
     accessToken: generateAccessToken(userId),
@@ -55,11 +38,7 @@ const generateTokenPair = (userId) => {
   };
 };
 
-/**
- * Verify JWT token
- * @param {string} token - JWT token to verify
- * @returns {Object} Decoded token payload
- */
+// Verify JWT token
 const verifyToken = (token) => {
   try {
     return jwt.verify(token, JWT_SECRET);
@@ -68,11 +47,7 @@ const verifyToken = (token) => {
   }
 };
 
-/**
- * Decode JWT token without verification (for expired tokens)
- * @param {string} token - JWT token to decode
- * @returns {Object} Decoded token payload
- */
+// Decode JWT token without verification
 const decodeToken = (token) => {
   return jwt.decode(token);
 };

@@ -1,3 +1,9 @@
+/**
+ * Simple i18n provider
+ * 
+ * Manages language state and provides translations
+ */
+
 import { createContext, useState, useEffect } from 'react';
 import type { FC, ReactNode } from 'react';
 import type { Language, Translations } from '../types';
@@ -8,7 +14,6 @@ interface I18nContextType {
   language: Language;
   t: Translations;
   setLanguage: (language: Language) => void;
-  // Утилитарная функция для получения вложенных переводов
   getText: (key: string) => string;
 }
 
@@ -17,6 +22,11 @@ export const I18nContext = createContext<I18nContextType | undefined>(undefined)
 interface I18nProviderProps {
   children: ReactNode;
 }
+
+// Simple nested key accessor
+const getNestedValue = (obj: any, key: string): string => {
+  return key.split('.').reduce((result, k) => result?.[k], obj) || key;
+};
 
 export const I18nProvider: FC<I18nProviderProps> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => detectBrowserLanguage());
@@ -28,20 +38,7 @@ export const I18nProvider: FC<I18nProviderProps> = ({ children }) => {
     saveLanguagePreference(newLanguage);
   };
 
-  const getText = (key: string): string => {
-    const keys = key.split('.');
-    let result: any = t;
-    
-    for (const k of keys) {
-      result = result?.[k];
-      if (result === undefined) {
-        console.warn(`Translation key "${key}" not found`);
-        return key; // Возвращаем ключ, если перевод не найден
-      }
-    }
-    
-    return typeof result === 'string' ? result : key;
-  };
+  const getText = (key: string): string => getNestedValue(t, key);
 
   useEffect(() => {
     setTranslations(translations[language]);

@@ -1,6 +1,12 @@
+/**
+ * Simple validation middleware
+ * 
+ * Handles request validation for auth endpoints
+ */
+
 const { body, validationResult } = require('express-validator');
 
-// Validation rules for registration
+// Registration validation rules
 const validateRegister = [
   body('email')
     .isEmail()
@@ -10,7 +16,7 @@ const validateRegister = [
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
-    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one number and one special character'),
+    .withMessage('Password must contain uppercase, lowercase, number and special character'),
   body('confirmPassword')
     .custom((value, { req }) => {
       if (value !== req.body.password) {
@@ -20,7 +26,7 @@ const validateRegister = [
     }),
 ];
 
-// Validation rules for login
+// Login validation rules
 const validateLogin = [
   body('email')
     .isEmail()
@@ -31,7 +37,7 @@ const validateLogin = [
     .withMessage('Password is required'),
 ];
 
-// Middleware to handle validation errors
+// Handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

@@ -103,6 +103,11 @@ html, body {
   box-sizing: border-box;
   overflow: hidden; // Предотвращает выход кнопок за границы
   
+  // Глобальное убирание подчеркивания для всех элементов внутри
+  * {
+    text-decoration: none !important;
+  }
+  
   @include respond-to($md) {
     min-height: 50px;
   }
@@ -122,6 +127,7 @@ html, body {
     position: relative;
     font-family: 'Inter', sans-serif;
     font-size: 14px;
+    text-decoration: none !important;
     
     // Полностью убираем все transform эффекты
     &:active,
@@ -130,19 +136,23 @@ html, body {
       transform: none !important;
       scale: none !important;
       outline: none !important;
+      text-decoration: none !important;
     }
     
     &.active {
       color: black;
       background-color: #fefefe;
+      text-decoration: none !important;
     }
     
     &.inactive {
       background: none;
-      color: $secondaryTextColor;
+      color: white;
+      text-decoration: none !important;
       
       &:hover {
-        color: $textColor;
+        color: white;
+        text-decoration: none !important;
       }
     }
     
@@ -151,10 +161,57 @@ html, body {
       display: block;
       width: 100%;
       height: 100%;
-      text-decoration: none;
+      text-decoration: none !important;
       color: inherit;
       padding: 0;
       margin: 0;
+    }
+  }
+  
+  // Специальные стили для кнопок, которые рендерятся как Link
+  a[role="button"] {
+    flex: 1;
+    height: calc(100% - 6px);
+    border: none;
+    background: transparent;
+    color: $secondaryTextColor;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 7px;
+    margin: 3px 1.5px;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:active,
+    &:focus,
+    &:hover {
+      transform: none !important;
+      scale: none !important;
+      outline: none !important;
+      text-decoration: none !important;
+    }
+    
+    &.active {
+      color: black;
+      background-color: #fefefe;
+      text-decoration: none !important;
+    }
+    
+    &.inactive {
+      background: none;
+      color: white;
+      text-decoration: none !important;
+      
+      &:hover {
+        color: white;
+        text-decoration: none !important;
+      }
     }
   }
 }
@@ -208,9 +265,11 @@ html, body {
 .inactive {
   background: none;
   font-weight: 500;
+  color: white;
   
   &:hover {
     background: none;
+    color: white;
   }
 }
 
@@ -253,8 +312,8 @@ html, body {
 }
 
 .forLink {
-  text-decoration: none;
-  color: $textColor;
+  text-decoration: none !important;
+  color: white;
   display: block;
   width: 100%;
   height: 100%;
